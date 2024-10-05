@@ -15,7 +15,7 @@ class AdminMenu:
         self.root.config(menu=self.menu_bar)
 
         self.contabilidad_menu = ttk.Menu(self.menu_bar, tearoff=0)
-        self.menu_bar.add_cascade(label="Usuario", menu=self.contabilidad_menu)
+        self.menu_bar.add_cascade(label="Contabilidad", menu=self.contabilidad_menu)
         self.contabilidad_menu.add_command(label="Agregar Usuario", command="self.show_add_user_form")
         #self.user_menu.add_command(label="Modificar/Eliminar Usuario", command=self.show_modify_user_form)
         #self.user_menu.add_separator()
