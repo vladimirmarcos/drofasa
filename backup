@@ -1,0 +1,35 @@
+def createtreeviewframe(self):
+        """funtion to create treeview
+        """        
+        #self.treeviewframe=ttk.Labelframe(master=self.framebase,width=100)  
+        #self.treeviewframe.grid(row=2,column=0,sticky=NSEW) 
+        
+
+        #self.treviewlist=ttk.Treeview(master=self.treeviewframe,
+           #                           height=17,
+          #                            columns=self.headinglist,
+         #                             show='headings')
+        self.treviewlist.grid(row=0,column=0,padx=10,pady=10)
+        for i,j in zip(self.headinglist,self.headingtext):
+            self.treviewlist.heading(i,text=j)
+
+        for i,j in zip(self.headinglist,self.widthdate):
+            self.treviewlist.column(i,width=j)
+        #self.yscroll = ttk.Scrollbar(self.treeviewframe, orient='vertical', command=self.treviewlist.yview)
+        self.treviewlist.configure(yscrollcommand=self.yscroll.set)
+    
+    # Crear scrollbar horizontal y asociarlo al Treeview
+        #self.xscroll = ttk.Scrollbar(self.treeviewframe, orient='horizontal', command=self.treviewlist.xview)
+        self.treviewlist.configure(xscrollcommand=self.xscroll.set)
+
+    # Colocar Treeview y los scrollbars en la cuadrícula (grid)
+        #self.treviewlist.grid(row=0, column=0, sticky=NSEW)
+        #self.yscroll.grid(row=0, column=1, sticky=NS)   # Scrollbar vertical al lado derecho
+        #self.xscroll.grid(row=1, column=0, sticky=EW)   # Scrollbar horizontal en la parte inferior
+
+    # Configurar columnas y filas para que se expandan
+        self.treeviewframe.grid_rowconfigure(0, weight=1)
+        self.treeviewframe.grid_columnconfigure(0, weight=1)
+        #self.writtetreview(self.treviewlist,data=["aldsaasd","asdasdasdasd","asdadasdasd"])
+
+#funciona pero no andan los scrooll bar

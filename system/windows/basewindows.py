@@ -1,0 +1,167 @@
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
+
+from system.conexion.basedatos import searchalldata,convertintdata
+
+
+class BaseForm:
+    def __init__(self, parent_frame):
+        self.parent_frame = parent_frame
+        self.create_widgets()
+    
+    def create_widgets(self):
+        self.framebase=ttk.Frame(master=self.parent_frame)
+        self.framebase.grid(row=0,column=0)
+        self.createbuttonwidget()
+        self.createdsearchwidget()
+        self.createtreeviewframe()
+        self.searchdata()
+        self.treeviewdata()
+        self.entsearch.focus()
+
+    def createbuttonwidget(self):
+        """funtion to create button
+        """        
+        self.buttonframe=ttk.Labelframe(master=self.framebase,width=100)  
+        self.buttonframe.grid(row=1,column=0,sticky=NSEW) 
+
+        self.buttoncreate = ttk.Button(self.buttonframe, text="Crear", 
+                                             command=self.createdata,
+                                             width=20,bootstyle=SUCCESS)
+        self.buttoncreate.grid(row=0, column=0,padx=10, pady=10)
+
+        self.buttonmodifity = ttk.Button(self.buttonframe, text="Modificar", 
+                                             command=self.modifidata,
+                                             width=20,bootstyle=WARNING)
+        self.buttonmodifity.grid(row=0, column=1,padx=10, pady=10)
+
+        self.buttondelete = ttk.Button(self.buttonframe, text="Eliminar", 
+                                             command=self.deletedata,
+                                             width=20,bootstyle=DANGER)
+        self.buttondelete.grid(row=0, column=2,padx=10, pady=10)
+    
+    def createdsearchwidget(self):
+        """ funtion to create search frame
+        """        
+        self.searchframe=ttk.Labelframe(master=self.framebase,width=20)  
+        self.searchframe.grid(row=0,column=0,sticky=NSEW) 
+        searchlabel=ttk.Label(master=self.searchframe,text="Busqueda por ")
+        searchlabel.grid(row=0,column=0,padx=10,pady=10)
+
+        self.valuessearch=[""]
+        self.searchoption= ttk.Combobox(
+        self.searchframe,
+        state="readonly",
+        values=self.valuessearch,width=20
+         )
+        self.searchoption.set(self.valuessearch[0])
+        self.searchoption.grid(row=0,column=1, pady=5,sticky="w")
+
+        self.entsearch=ttk.Entry(master=self.searchframe,width=100)
+        self.entsearch.grid(row=0,column=2,padx=10,pady=10,sticky=NSEW)
+
+    def createtreeviewframe(self):
+        """Funtion to create treeview with scrollbars"""
+
+        self.treeviewframe = ttk.Labelframe(master=self.framebase)
+        self.treeviewframe.grid(row=2, column=0, sticky=NSEW)
+
+        self.treviewlist = ttk.Treeview(
+            master=self.treeviewframe,
+            height=30,
+            columns=self.headinglist,
+            show='headings'
+        )
+
+        self.yscroll = ttk.Scrollbar(self.treeviewframe, orient='vertical', command=self.treviewlist.yview,bootstyle=SUCCESS)
+        self.treviewlist.configure(yscrollcommand=self.yscroll.set)
+
+        self.xscroll = ttk.Scrollbar(self.treeviewframe, orient='horizontal', command=self.treviewlist.xview,bootstyle=SUCCESS)
+        self.treviewlist.configure(xscrollcommand=self.xscroll.set)
+        
+        self.treviewlist.grid(row=0, column=0, sticky=NSEW)
+        self.yscroll.grid(row=0, column=1, sticky=NS)
+        self.xscroll.grid(row=1, column=0, sticky=EW)
+
+        self.treeviewframe.grid_rowconfigure(0, weight=1)
+        self.treeviewframe.grid_columnconfigure(0, weight=1)
+
+        for i, j in zip(self.headinglist, self.headingtext):
+            self.treviewlist.heading(i, text=j, anchor=W)
+
+        for i, j in zip(self.headinglist, self.widthdate):
+            self.treviewlist.column(i, width=j, stretch=False)
+
+        # Aumentar el tamaño de la fuente para aumentar el alto de las filas
+        self.treviewlist.tag_configure('row', font=('Helvetica', 8))
+
+        
+        self.treviewlist.bind("<Button-3>", self.copy_to_clipboard)
+        
+    def copy_to_clipboard(self, event):
+        """Copy de data selection
+
+        Args:
+            event (_type_): _description_
+        """        
+        
+        item_id = self.treviewlist.identify_row(event.y)
+        column = self.treviewlist.identify_column(event.x)
+        if item_id and column:
+            col_index = int(column.replace("#", "")) - 1
+            row_values = self.treviewlist.item(item_id, 'values')
+            if row_values:
+                value_to_copy = row_values[col_index]
+                self.treeviewframe.clipboard_clear()  
+                self.treeviewframe.clipboard_append(value_to_copy)  
+                  
+    def cleartreview(self,triview):
+        """Clear trieview
+
+        Args:
+            triview (Triewiv): Some triewiv
+        """              
+        data=triview.get_children()
+        for element in data:
+            triview.delete(element)
+
+    def writtetreview(self,triewiew,data):
+        """_summary_
+
+        Args:
+            triewiew (_type_): _description_
+            data (_type_): _description_
+        """        
+        for element in data:
+            triewiew.insert('', 'end', values=element)      
+
+    def searchdata(self):
+        tupleauxiliar=searchalldata(self.table)
+        self.data=[list(tupla) for tupla in tupleauxiliar]
+        
+
+    def treeviewdata(self):
+        pass  
+
+    def createdata(self):
+        pass
+
+    def modifidata(self):
+        pass
+    
+    def deletedata(self):
+        pass
+
+    def convertintegretdata(self,table,campo,data):
+        """_summary_
+
+        Args:
+            table (_type_): _description_
+            campo (_type_): _description_
+            data (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """        
+        newdata=convertintdata(table,campo,data)[0]
+        return newdata

@@ -2,6 +2,8 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 
 
+from system.windows.contabilidad.conceptocompra import ConceptoCompraForm
+
 class AdminMenu:
     def __init__(self, root):
         self.root = root
@@ -16,7 +18,7 @@ class AdminMenu:
 
         self.contabilidad_menu = ttk.Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Contabilidad", menu=self.contabilidad_menu)
-        self.contabilidad_menu.add_command(label="Agregar Usuario", command="self.show_add_user_form")
+        self.contabilidad_menu.add_command(label="Conceptos de compras", command=self.cuentacontabilidad)
         #self.user_menu.add_command(label="Modificar/Eliminar Usuario", command=self.show_modify_user_form)
         #self.user_menu.add_separator()
         #self.user_menu.add_command(label="Cerrar Sesión", command=self.logout)
@@ -39,3 +41,7 @@ class AdminMenu:
             self.frame.destroy()
         self.frame = ttk.Frame(self.root)
         self.frame.pack()
+    
+    def cuentacontabilidad(self):
+        self.clear_frame()
+        ConceptoCompraForm(self.frame)

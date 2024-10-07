@@ -8,7 +8,9 @@ def main():
     
     root = ttk.Window(themename="darkly")
     root.state('zoomed')  
-    app = AdminMenu(root)
+    root.grid_columnconfigure(0, weight=1)  
+    root.grid_rowconfigure(0,weight=1)
+    AdminMenu(root)
     root.mainloop()
 
 if __name__ == "__main__":
