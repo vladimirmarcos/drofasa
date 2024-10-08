@@ -1,7 +1,8 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from tkinter import messagebox
 
-from system.conexion.basedatos import searchalldata,convertintdata
+from system.conexion.basedatos import searchalldata,convertintdata,datavaluescombo,dataexist,convertdataint,savedata
 
 
 class BaseForm:
@@ -164,4 +165,57 @@ class BaseForm:
             _type_: _description_
         """        
         newdata=convertintdata(table,campo,data)[0]
+        return newdata
+    
+    def selectdatacombo(self,table):
+        """_summary_
+
+        Args:
+            table (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """        
+        tupleauxiliar=datavaluescombo(table)
+        values=[tupla[0] for tupla in tupleauxiliar]
+        values.insert(0,"")
+        return values
+
+    def savenewdata(self,frame,table,exist,message,data):
+        """_summary_
+
+        Args:
+            frame (_type_): _description_
+            table (_type_): _description_
+            exist (_type_): _description_
+            message (_type_): _description_
+        """           
+        
+        if not (dataexist(table,exist.get(),"nombre")):
+                 savedata(message,data)
+                 frame.destroy()
+                 self.create_widgets()
+        else:
+                messagebox.showerror("Error",f"El dato {exist.get()} ya existe en la base de datos")
+
+            
+    def verifnewdata(self):
+        pass
+
+    def canceldata(self,frame):
+        frame.destroy()
+        self.create_widgets()
+
+    def convertdatatointeger(self,table,campo,data):
+        """_summary_
+
+        Args:
+            table (_type_): _description_
+            campo (_type_): _description_
+            data (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """        
+        newdata=convertdataint(table,campo,data)[0]
         return newdata

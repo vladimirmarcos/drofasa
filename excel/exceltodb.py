@@ -1,11 +1,9 @@
 import pandas as pd
 import sqlite3
 def verificar_existencia(cursor,conn, table_name, column_name, valor):
-    #print (f" { valor}")
-    #print (f"valor {valor} su tipo {len(valor)}")
+    print (f" { valor}")
+    print (f"valor {valor} su tipo {len(valor)}")
     query = f"SELECT id FROM {table_name} WHERE {column_name} = ?"
-
-    # Ejecutar la consulta
     cursor.execute(query, (valor,))
     return cursor.fetchone()[0]
 
@@ -16,7 +14,8 @@ def excel_to_sqlite(excel_file, db_file, table_name):
     cursor = conn.cursor()
     
     for index, row in df.iterrows():
-        values=[row[0],row[1],verificar_existencia(cursor,conn,"iva","nombre",row[2]),verificar_existencia(cursor,conn,"siap","nombre", row[3])]
+        print (row)
+        values=[row[0],row[1],verificar_existencia(cursor,conn,"iva","nombre",row[2]),verificar_existencia(cursor,conn,"siap","nombre", row[3]),row[4]]
         values = tuple(values)
         placeholders = ", ".join(["?" for _ in row])
         insert_query = f"INSERT INTO {table_name} VALUES ({placeholders})"
@@ -30,6 +29,6 @@ def excel_to_sqlite(excel_file, db_file, table_name):
 
 excel_file = 'excel\conceptosdecompra.xlsx'  
 db_file = 'drofasa.db'  
-table_name = 'mi_tabla'  
+#'excel\cuentascontables.xlsx' 
 
 excel_to_sqlite(excel_file, db_file, "conceptocompra")
