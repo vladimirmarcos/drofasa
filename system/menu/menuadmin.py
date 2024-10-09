@@ -3,6 +3,7 @@ from ttkbootstrap.constants import *
 
 
 from system.windows.contabilidad.conceptocompra import ConceptoCompraForm
+from system.windows.contabilidad.cheque.chequebase import ChequeraBaseForm
 
 class AdminMenu:
     def __init__(self, root):
@@ -19,6 +20,7 @@ class AdminMenu:
         self.contabilidad_menu = ttk.Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Contabilidad", menu=self.contabilidad_menu)
         self.contabilidad_menu.add_command(label="Conceptos de compras", command=self.cuentacontabilidad)
+        self.contabilidad_menu.add_command(label="Cheque común", command=self.chequecomun)
         #self.user_menu.add_command(label="Modificar/Eliminar Usuario", command=self.show_modify_user_form)
         #self.user_menu.add_separator()
         #self.user_menu.add_command(label="Cerrar Sesión", command=self.logout)
@@ -45,3 +47,7 @@ class AdminMenu:
     def cuentacontabilidad(self):
         self.clear_frame()
         ConceptoCompraForm(self.frame)
+
+    def chequecomun(self):
+        self.clear_frame()
+        ChequeraBaseForm(self.frame)

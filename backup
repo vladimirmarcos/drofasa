@@ -33,3 +33,7 @@ def createtreeviewframe(self):
         #self.writtetreview(self.treviewlist,data=["aldsaasd","asdasdasdasd","asdadasdasd"])
 
 #funciona pero no andan los scrooll bar
+
+
+
+

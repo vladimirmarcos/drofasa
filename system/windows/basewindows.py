@@ -1,6 +1,7 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
+import sqlite3
 
 from system.conexion.basedatos import searchalldata,convertintdata,datavaluescombo,dataexist,convertdataint,savedata
 
@@ -148,8 +149,16 @@ class BaseForm:
         pass
 
     def modifidata(self):
-        pass
+        self.currentvalueselection=self.treviewlist.focus()
+        self.currentvalue=self.treviewlist.item(self.currentvalueselection,'values')
+        if self.currentvalue!="":
+            self.showdatamodifi()
+        else:
+            messagebox.showerror("Error","No se selecciono ningún dato")
     
+    def showdatamodifi(self):
+        pass
+
     def deletedata(self):
         pass
 
@@ -193,19 +202,59 @@ class BaseForm:
         
         if not (dataexist(table,exist.get(),"nombre")):
                  savedata(message,data)
-                 frame.destroy()
-                 self.create_widgets()
+                 messagebox.showinfo("",f"El dato {exist.get()} fue agregado exitosamente a la base de datos")
+                 self.canceldata(frame)
         else:
                 messagebox.showerror("Error",f"El dato {exist.get()} ya existe en la base de datos")
 
-            
     def verifnewdata(self):
         pass
 
     def canceldata(self,frame):
-        frame.destroy()
+        self.clearframe(frame)
         self.create_widgets()
 
+    def clearframe(self,frame):
+        frame.destroy()
+
+    def writteentry(self,listentry,valueentry,flag):
+        """_summary_
+
+        Args:
+            listentry (_type_): _description_
+            valueentry (_type_): _description_
+            flag (_type_): _description_
+        """              
+        for i,j in zip(listentry,valueentry):
+            i.delete(0, ttk.END)  
+            i.insert(0, j)  
+        if flag==0:
+            for i in listentry:
+                i.config(state=NORMAL)
+            return
+        elif flag==1:
+            for i in listentry:
+                i.config(state=READONLY)
+            return
+        else:
+            for i in listentry:
+                i.config(state=DISABLED)
+            return
+
+    def savemodifidata(self,message,data,frame):
+        """_summary_
+
+        Args:
+            message (_type_): _description_
+            data (_type_): _description_
+        """        
+        try:
+            savedata(message,data)
+            messagebox.showinfo("Cambio","¡Se actualizo el dato en la base de datos.!")
+            self.canceldata(frame)
+        except sqlite3.OperationalError:
+            messagebox.showerror("Error","La base de datos esta ocupada. Espere un momento")
+    
     def convertdatatointeger(self,table,campo,data):
         """_summary_
 

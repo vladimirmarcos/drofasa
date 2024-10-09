@@ -72,11 +72,16 @@ def dataexist(table,data,campo):
     return resultados
 
 def savedata(message,data):
-    """Insertar datos en la tabla."""
+    """_summary_
+
+    Args:
+        message (_type_): _description_
+        data (_type_): _description_
+    """    
     conexion=ConexionDB()
-    
     conexion.cursor.execute(message,data)
     conexion.cerrar()
+
 
 
    
