@@ -141,7 +141,6 @@ class BaseForm:
         tupleauxiliar=searchalldata(self.table)
         self.data=[list(tupla) for tupla in tupleauxiliar]
         
-
     def treeviewdata(self):
         pass  
 
@@ -268,3 +267,30 @@ class BaseForm:
         """        
         newdata=convertdataint(table,campo,data)[0]
         return newdata
+    
+    def verifnumer(self,data,flag):
+        """_summary_
+
+        Args:
+            data (_type_): _description_
+            flag (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """                          
+        if flag==0:
+            try:
+                value=int (data.get())
+                return value
+            except:
+                self.writteentry([data],[""],0)
+                data.focus()
+                return False
+        if flag==1:
+            try:
+                value=float (data.get())
+                return value
+            except:
+                self.writteentry([data],[""],0)
+                data.focus()
+                return False

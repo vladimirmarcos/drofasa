@@ -87,8 +87,6 @@ class ConceptoCompraForm(BaseForm):
          if (self.entname.get()=="" or self.entiva.get()=="" or self.entsiap.get()=="" or self.entcc.get()=="" or self.entct.get()==""):
             messagebox.showerror("Error","Los campos de Nombre, SIAP, IVA, Cuenta contables o Cuentas de tesorería no pueden estar vacíos")
          else:
-            print (self.entct.get())
-            print (len(self.entct.get()))
             data=(self.entname.get(),
             self.convertdatatointeger("iva","nombre",self.entiva.get()),
             self.convertdatatointeger("siap","nombre",self.entsiap.get()),

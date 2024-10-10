@@ -3,14 +3,16 @@ from ttkbootstrap.constants import *
 from tkinter import messagebox
 
 from system.windows.basewindows import BaseForm
+from system.conexion.basedatos import query,savedata
 
 class ChequeraBaseForm(BaseForm):
     def __init__(self, parent_frame):
         self.parent_frame = parent_frame
         self.headinglist=("id","nombre","li","ls","va") 
-        self.widthdate=(80,300,200,350,200,200)
+        self.widthdate=(80,300,200,350,200)
         self.headingtext=("Id","Banco","Limite Inferior.","Limite Superior","Proximo Valor valido")
         self.table="chequeracomun"
+        self.tableauxiliar="chequescomunes"
         self.create_widgets()
         
     def treeviewdata(self):
@@ -33,121 +35,143 @@ class ChequeraBaseForm(BaseForm):
         label.grid(row=1,column=0,padx=10,pady=10,sticky=NSEW)
         
 
-        self.entiva=ttk.Combobox(master=self.newframebase,values=self.ivavalue,width=50,state=READONLY)
-        self.entiva.grid(row=1,column=1,padx=10,pady=10,sticky=NSEW)
-        self.entiva.set(self.ivavalue[0])
+        self.entlm=ttk.Entry(master=self.newframebase,width=50)
+        self.entlm.grid(row=1,column=1,padx=10,pady=10,sticky=NSEW)
 
 
-        siaplabel=ttk.Label(master=self.newframebase,text="Limite superior : ")
-        siaplabel.grid(row=2,column=0,padx=10,pady=10,sticky=NSEW)
+        lslabel=ttk.Label(master=self.newframebase,text="Limite superior : ")
+        lslabel.grid(row=2,column=0,padx=10,pady=10,sticky=NSEW)
 
-        self.siapvalue=self.selectdatacombo("siap")
-        self.entsiap=ttk.Combobox(master=self.newframebase,width=50,values=self.siapvalue,state=READONLY)
-        self.entsiap.grid(row=2,column=1,padx=10,pady=10,sticky=NSEW)
-        self.entsiap.set(self.siapvalue[0])
+        self.entls=ttk.Entry(master=self.newframebase,width=50)
+        self.entls.grid(row=2,column=1,padx=10,pady=10,sticky=NSEW)
 
-        cclabel=ttk.Label(master=self.newframebase,text="Cuentas contable : ")
-        cclabel.grid(row=3,column=0,padx=10,pady=10,sticky=NSEW)
-
-        self.ccvalue=self.selectdatacombo("cuentacontable")
-        self.entcc=ttk.Combobox(master=self.newframebase,width=50,values=self.ccvalue,state=READONLY)
-        self.entcc.grid(row=3,column=1,padx=10,pady=10,sticky=NSEW)
-        self.entcc.set(self.ccvalue[0])
-
-
-        ctlabel=ttk.Label(master=self.newframebase,text="Cuentas Tesoreria : ")
-        ctlabel.grid(row=4,column=0,padx=10,pady=10,sticky=NSEW)
-
-        self.ctvalue=self.selectdatacombo("cuentastesoreria")
-        self.entct=ttk.Combobox(master=self.newframebase,width=50,values=self.ccvalue,state=READONLY)
-        self.entct.grid(row=4,column=1,padx=10,pady=10,sticky=NSEW)
-        self.entct.set(self.ctvalue[0])
+       
 
         buttoncancel = ttk.Button(self.newframebase, text="Cancelar", 
                                              command= lambda: self.canceldata(self.newframebase),
                                              width=20,bootstyle=DANGER)
-        buttoncancel.grid(row=5, column=0,padx=10, pady=10)
+        buttoncancel.grid(row=3, column=0,padx=10, pady=10)
 
         buttoncreate = ttk.Button(self.newframebase, text="Crear", 
                                              command= self.verifnewdata,
                                              width=20,bootstyle=SUCCESS)
-        buttoncreate.grid(row=5, column=1,padx=10, pady=10)
+        buttoncreate.grid(row=3, column=1,padx=10, pady=10)
 
     def verifnewdata(self):
-         if (self.entname.get()=="" or self.entiva.get()=="" or self.entsiap.get()=="" or self.entcc.get()=="" or self.entct.get()==""):
-            messagebox.showerror("Error","Los campos de Nombre, SIAP, IVA, Cuenta contables o Cuentas de tesorería no pueden estar vacíos")
+         if (self.entbanco.get()=="" or self.entlm.get()=="" or self.entls.get()==""):
+            messagebox.showerror("Error","Los campos de Banco, Límite Superior o Ingerior no pueden estar vacíos")
          else:
-            data=(self.entname.get(),
-            self.convertdatatointeger("iva","nombre",self.entiva.get()),
-            self.convertdatatointeger("siap","nombre",self.entsiap.get()),
-            self.convertdatatointeger("cuentacontable","nombre",self.entcc.get()))
-            message=f'''INSERT INTO conceptocompra (nombre,ivaid,siapid,ccid) VALUES (?, ?,?,?)'''
-            self.savenewdata(self.newframebase,
-                             "conceptocompra",
-                             self.entname
-                             ,message,data)
-   
+            if not (self.verifnumer(self.entlm,0)):
+                 messagebox.showerror("Error", "el límite inferior no es un valor valido como entero =/")
+            elif not (self.verifnumer(self.entls,0)):
+                 messagebox.showerror("Error", "el límite superior no es un valor valido como entero =/")
+            elif self.veriflimit(self.entlm.get())==1:
+                 messagebox.showerror("Error", "el límite inferior ya existe en otra chequera, verifique el dato")
+            elif self.veriflimit(self.entls.get())==1:
+                 messagebox.showerror("Error", "el límite superior ya existe en otra chequera, verifique el dato")
+            else:
+                 data=(self.entbanco.get(),
+                       self.entlm.get(),
+                       self.entls.get(),
+                       self.entlm.get(),
+                       1)
+                 message=message=f'''INSERT INTO chequeracomun (nombre,li,ls,va,estado) VALUES (?, ?,?,?,?)'''
+                 savedata(message,data)
+                 messagebox.showinfo("",f"El cheque fue agregado exitosamente a la base de datos")
+                 self.canceldata(self.newframebase)
+                 
+    def veriflimit(self,value):
+        message=f"""SELECT 
+                            CASE 
+                            WHEN EXISTS (
+            SELECT 1
+            FROM {self.table}
+            WHERE li <= {value} AND ls >= {value}
+        ) 
+        THEN 1 
+        ELSE 0 
+    END AS resultado;"""
+        return query(message,0)
+
     def showdatamodifi(self):
+        """_summary_
+        """        
         self.clearframe(self.framebase)
 
-        self.newframebase=ttk.LabelFrame(master=self.parent_frame)
-        self.newframebase.grid(row=0,column=0)
+        self.newframebase=ttk.LabelFrame(master=self.parent_frame,width=600)
+        self.newframebase.grid(row=0,column=2,sticky=NSEW)
 
-        namelabel=ttk.Label(master=self.newframebase,text="Nombre: ")
-        namelabel.grid(row=0,column=0,padx=10,pady=10,sticky=NSEW)
+        banknamelabel=ttk.Label(master=self.newframebase,text="Nombre Banco: ")
+        banknamelabel.grid(row=0,column=0,padx=10,pady=10,sticky=NSEW)
 
-        self.entname=ttk.Entry(master=self.newframebase,width=50)
-        self.entname.grid(row=0,column=1,padx=10,pady=10,sticky=NSEW)
-        self.writteentry([self.entname],[self.currentvalue[1]],1)
+        self.entnamebank=ttk.Entry(master=self.newframebase,width=50)
+        self.entnamebank.grid(row=0,column=1,padx=10,pady=10,sticky=NSEW)
+        self.writteentry([self.entnamebank],[self.currentvalue[1]],1)
 
+        chequeraidlabel=ttk.Label(master=self.newframebase,text="ID Chequera: ")
+        chequeraidlabel.grid(row=1,column=0,padx=10,pady=10,sticky=NSEW)
 
-        ivalabel=ttk.Label(master=self.newframebase,text="I.V.A.: ")
-        ivalabel.grid(row=1,column=0,padx=10,pady=10,sticky=NSEW)
-        self.ivavalue=self.selectdatacombo("iva")
-
-        self.entiva=ttk.Combobox(master=self.newframebase,values=self.ivavalue,width=50,state=READONLY)
-        self.entiva.grid(row=1,column=1,padx=10,pady=10,sticky=NSEW)
+        self.chequeraid=ttk.Entry(master=self.newframebase,width=50)
+        self.chequeraid.grid(row=1,column=1,padx=10,pady=10,sticky=NSEW)
+        self.writteentry([self.chequeraid],[self.currentvalue[0]],1)
         
-        valueiva=self.convertdatatointeger("iva","nombre",self.currentvalue[2])
-        self.entiva.set(self.convertintegretdata("iva","nombre",valueiva))
+        message=f"SELECT * FROM {self.tableauxiliar} WHERE estado=1"
+        query(message,1)
+        
 
-
-        siaplabel=ttk.Label(master=self.newframebase,text="Clasificación S.I.A.P. : ")
-        siaplabel.grid(row=2,column=0,padx=10,pady=10,sticky=NSEW)
-
-        self.siapvalue=self.selectdatacombo("siap")
-        self.entsiap=ttk.Combobox(master=self.newframebase,width=50,values=self.siapvalue,state=READONLY)
-        self.entsiap.grid(row=2,column=1,padx=10,pady=10,sticky=NSEW)
-        valuesiap=self.convertdatatointeger("siap","nombre",self.currentvalue[3])
-        self.entsiap.set(self.convertintegretdata("siap","nombre",valuesiap))
-
-        cclabel=ttk.Label(master=self.newframebase,text="Cuentas contable : ")
-        cclabel.grid(row=3,column=0,padx=10,pady=10,sticky=NSEW)
-
-        self.ccvalue=self.selectdatacombo("cuentacontable")
-        self.entcc=ttk.Combobox(master=self.newframebase,width=50,values=self.ccvalue,state=READONLY)
-        self.entcc.grid(row=3,column=1,padx=10,pady=10,sticky=NSEW)
-        valuescc=self.convertdatatointeger("cuentacontable","nombre",self.currentvalue[4])
-        self.entcc.set(self.convertintegretdata("cuentacontable","nombre",valuescc))
-
-        ctlabel=ttk.Label(master=self.newframebase,text="Cuentas tesoreria : ")
-        ctlabel.grid(row=4,column=0,padx=10,pady=10,sticky=NSEW)
-
-        self.ctvalue=self.selectdatacombo("cuentastesoreria")
-        self.entct=ttk.Combobox(master=self.newframebase,width=50,values=self.ctvalue,state=READONLY)
-        self.entct.grid(row=4,column=1,padx=10,pady=10,sticky=NSEW)
-        valuesct=self.convertdatatointeger("cuentastesoreria","nombre",self.currentvalue[5])
-        self.entct.set(self.convertintegretdata("cuentastesoreria","nombre",valuesct))
+        self.createtreechequeras()
+        self.cleartreview(self.treviewcheque )
+        self.writteches(query(message,1),self.treviewcheque)
+        
 
         buttoncancel = ttk.Button(self.newframebase, text="Cancelar", 
                                              command= lambda: self.canceldata(self.newframebase),
                                              width=20,bootstyle=DANGER)
         buttoncancel.grid(row=5, column=0,padx=10, pady=10)
 
-        buttoncreate = ttk.Button(self.newframebase, text="Modificar", 
+        buttoncreate = ttk.Button(self.newframebase, text="Dar de Baja", 
                                              command= self.verifdatamodif,
-                                             width=20,bootstyle=SUCCESS)
+                                             width=20,bootstyle=WARNING)
         buttoncreate.grid(row=5, column=1,padx=10, pady=10)
+
+    def writteches(self,data,triewiew):
+        for element in data:
+            triewiew.insert('', 'end', values=[element[0],element[1],element[3]])
+         
+    def createtreechequeras(self):
+        """Funtion to create treeview with scrollbars"""
+
+        self.treeviewframe = ttk.Labelframe(master=self.parent_frame)
+        self.treeviewframe.grid(row=1, column=2, sticky=NSEW)
+
+        self.treviewcheque = ttk.Treeview(
+            master=self.treeviewframe,
+            height=30,
+            columns=["id","numero","monto"],
+            show='headings'
+        )
+
+        self.yscroll = ttk.Scrollbar(self.treeviewframe, orient='vertical', command=self.treviewlist.yview,bootstyle=SUCCESS)
+        self.treviewcheque.configure(yscrollcommand=self.yscroll.set)
+
+        self.xscroll = ttk.Scrollbar(self.treeviewframe, orient='horizontal', command=self.treviewlist.xview,bootstyle=SUCCESS)
+        self.treviewcheque.configure(xscrollcommand=self.xscroll.set)
+        
+        self.treviewcheque.grid(row=0, column=0, sticky=NSEW)
+        self.yscroll.grid(row=0, column=1, sticky=NS)
+        self.xscroll.grid(row=1, column=0, sticky=EW)
+
+        self.treeviewframe.grid_rowconfigure(0, weight=1)
+        self.treeviewframe.grid_columnconfigure(0, weight=1)
+
+        for i, j in zip(["id","numero","monto"], ["I.D.","Número","Monto"]):
+            self.treviewcheque.heading(i, text=j, anchor=W)
+
+        for i, j in zip(["id","numero","monto"], [50,200,300]):
+            self.treviewcheque.column(i, width=j, stretch=False)
+
+        # Aumentar el tamaño de la fuente para aumentar el alto de las filas
+        self.treviewcheque.tag_configure('row', font=('Helvetica', 8))
 
     def verifdatamodif(self):  
         if self.entiva.get()=="" or self.entsiap.get()=="" or self.entcc.get()=="" or self.entct.get()=="":
@@ -161,3 +185,6 @@ class ChequeraBaseForm(BaseForm):
             message=f"UPDATE conceptocompra SET (ivaid,siapid,ccid,ctid)=(?,?,?,?) WHERE id= ?"
             self.savemodifidata(message,savedata,self.newframebase)
 
+    def createbuttonwidget(self):
+        super().createbuttonwidget()
+        self.buttonmodifity.config(text="Dar de baja cheque")

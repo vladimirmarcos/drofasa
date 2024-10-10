@@ -82,6 +82,24 @@ def savedata(message,data):
     conexion.cursor.execute(message,data)
     conexion.cerrar()
 
+def query(message,flag):
+    """_summary_
+
+    Args:
+        message (_type_): _description_
+        flag (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """    
+    conexion=ConexionDB()
+    conexion.cursor.execute(message)
+    if flag==0:
+        resultados = conexion.cursor.fetchone()[0]
+        return resultados
+    elif flag==1:
+        resultados = conexion.cursor.fetchall()
+        return resultados
 
 
    
