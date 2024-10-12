@@ -118,7 +118,6 @@ class ChequeraBaseForm(BaseForm):
         message=f"SELECT * FROM {self.tableauxiliar} WHERE estado=1"
         query(message,1)
         
-
         self.createtreechequeras()
         self.cleartreview(self.treviewcheque )
         self.writteches(query(message,1),self.treviewcheque)
@@ -133,6 +132,27 @@ class ChequeraBaseForm(BaseForm):
                                              command= self.verifdatamodif,
                                              width=20,bootstyle=WARNING)
         buttoncreate.grid(row=5, column=1,padx=10, pady=10)
+
+    def verifdatamodif(self): 
+        self.currentchequeselection=self.treviewcheque.focus()
+        self.currentvaluecheque=self.treviewcheque.item(self.currentchequeselection,'values') 
+        if self.currentvaluecheque!="":
+            ask=messagebox.askquestion("Consulta","Esta seguro de dar de baja el cheque del cliente tanto ")
+            self.clearframe(self.treeviewframe )
+            self.canceldata(self.newframebase)
+        else:
+            messagebox.showerror("Error","No se selecciono ningún cheque de la chequera")
+        """ 
+        if self.entiva.get()=="" or self.entsiap.get()=="" or self.entcc.get()=="" or self.entct.get()=="":
+            messagebox.showerror("Error","Alguno de los campos quedo vacío")
+        else:
+            savedata=(self.convertdatatointeger("iva","nombre",self.entiva.get()),
+                      self.convertdatatointeger("siap","nombre",self.entsiap.get()),
+                      self.convertdatatointeger("cuentacontable","nombre",self.entcc.get()),
+                      self.convertdatatointeger("cuentastesoreria","nombre",self.entct.get()),
+                      self.currentvalue[0])
+            message=f"UPDATE conceptocompra SET (ivaid,siapid,ccid,ctid)=(?,?,?,?) WHERE id= ?"
+            self.savemodifidata(message,savedata,self.newframebase)"""
 
     def writteches(self,data,triewiew):
         for element in data:
@@ -170,20 +190,7 @@ class ChequeraBaseForm(BaseForm):
         for i, j in zip(["id","numero","monto"], [50,200,300]):
             self.treviewcheque.column(i, width=j, stretch=False)
 
-        # Aumentar el tamaño de la fuente para aumentar el alto de las filas
         self.treviewcheque.tag_configure('row', font=('Helvetica', 8))
-
-    def verifdatamodif(self):  
-        if self.entiva.get()=="" or self.entsiap.get()=="" or self.entcc.get()=="" or self.entct.get()=="":
-            messagebox.showerror("Error","Alguno de los campos quedo vacío")
-        else:
-            savedata=(self.convertdatatointeger("iva","nombre",self.entiva.get()),
-                      self.convertdatatointeger("siap","nombre",self.entsiap.get()),
-                      self.convertdatatointeger("cuentacontable","nombre",self.entcc.get()),
-                      self.convertdatatointeger("cuentastesoreria","nombre",self.entct.get()),
-                      self.currentvalue[0])
-            message=f"UPDATE conceptocompra SET (ivaid,siapid,ccid,ctid)=(?,?,?,?) WHERE id= ?"
-            self.savemodifidata(message,savedata,self.newframebase)
 
     def createbuttonwidget(self):
         super().createbuttonwidget()
