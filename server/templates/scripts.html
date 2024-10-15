@@ -1,0 +1,18 @@
+<script>
+    document.getElementById('search').addEventListener('input', function () {
+        const input = this.value;
+        const options = document.querySelectorAll('#options option');
+
+        // Verificar las opciones y completar los campos adicionales
+        options.forEach(option => {
+            if (option.value === input) {
+                const codigo = option.getAttribute('data-id');
+                const observacion = option.getAttribute('data-observacion');
+
+                // Llenar los campos con los datos correspondientes
+                document.getElementById('codigo').value = codigo;
+                document.getElementById('observacion').value = observacion;
+            }
+        });
+    });
+</script>

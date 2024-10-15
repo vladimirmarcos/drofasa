@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1>Facturas </h1>
+    <!-- Campo de entrada que sirve como ComboBox -->
+    <div class="form-group">
+        <label for="comboBoxInput">Buscar:</label>
+        <input type="text" id="comboBoxInput" class="form-control" placeholder="La razón social del proveedor" list="comboOptions" oninput="filterOptions()">
+        <datalist id="comboOptions">
+            {% for item in items %}
+                <option value={{item}}></option>
+                {% endfor %} 
+        </datalist>
+        
+    </div>
+    <div class="form-group">
+        <label for="codigo">Cuit:</label>
+        <input type="text" id="codigo" class="form-control" readonly>
+    </div>
+    <div class="form-group">
+        <label for="observacion">Factura:</label>
+        <input type="text" id="observacion" class="form-control" readonly>
+    </div>
+</div>
+{% endblock %}

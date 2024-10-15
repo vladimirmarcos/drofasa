@@ -1,0 +1,11 @@
+<div class="form-group">
+    <label for="items_per_page">Mostrar:</label>
+    <select name="items_per_page" class="form-control" id="items_per_page">
+        <option value="10" {% if items_per_page == 10 %}selected{% endif %}>10</option>
+        <option value="50" {% if items_per_page == 50 %}selected{% endif %}>50</option>
+        <option value="100" {% if items_per_page == 100 %}selected{% endif %}>100</option>
+        <option value="200" {% if items_per_page == 200 %}selected{% endif %}>200</option>
+        <option value="500" {% if items_per_page == 500 %}selected{% endif %}>500</option>
+    </select>
+</div>
+<button type="submit" class="btn btn-primary">Aplicar</button>

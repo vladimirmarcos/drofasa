@@ -1,6 +1,8 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
+import requests
+import webbrowser
 
 from system.windows.basewindows import BaseForm
 from system.conexion.basedatos import query,savedata
@@ -121,10 +123,10 @@ class ChequeraBaseForm(BaseForm):
         self.createtreechequeras()
         self.cleartreview(self.treviewcheque )
         self.writteches(query(message,1),self.treviewcheque)
-        
+        #self.canceldata(self.newframebase)
 
         buttoncancel = ttk.Button(self.newframebase, text="Cancelar", 
-                                             command= lambda: self.canceldata(self.newframebase),
+                                             command= lambda: self.prueba,
                                              width=20,bootstyle=DANGER)
         buttoncancel.grid(row=5, column=0,padx=10, pady=10)
 
@@ -132,7 +134,15 @@ class ChequeraBaseForm(BaseForm):
                                              command= self.verifdatamodif,
                                              width=20,bootstyle=WARNING)
         buttoncreate.grid(row=5, column=1,padx=10, pady=10)
-
+    def prueba(self):
+     response = requests.get(f"http://127.0.0.1:5000/")
+    
+     if response.status_code == 200:
+        webbrowser.open("http://127.0.0.1:5000/")
+        
+     else:
+         messagebox.showerror("Error","no se dio")
+        #label_resultado.config(text="Error en la búsqueda")
     def verifdatamodif(self): 
         self.currentchequeselection=self.treviewcheque.focus()
         self.currentvaluecheque=self.treviewcheque.item(self.currentchequeselection,'values') 

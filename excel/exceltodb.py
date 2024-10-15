@@ -15,20 +15,20 @@ def excel_to_sqlite(excel_file, db_file, table_name):
     
     for index, row in df.iterrows():
         #print (row)
-        values=[row[0],row[1],verificar_existencia(cursor,conn,"iva","nombre",row[2]),verificar_existencia(cursor,conn,"siap","nombre", row[3]),row[4],row[5]]
-        values = tuple(values)
-        print (values)
+        #values=[row[0],row[1],verificar_existencia(cursor,conn,"iva","nombre",row[2]),verificar_existencia(cursor,conn,"siap","nombre", row[3]),row[4],row[5]]
+        values = tuple(row)
         placeholders = ", ".join(["?" for _ in row])
         insert_query = f"INSERT INTO {table_name} VALUES ({placeholders})"
+        #print (f"{placeholders} {insert_query}")
         cursor.execute(insert_query, values)
     conn.commit()
     conn.close()
 
 
-excel_file = 'excel\conceptosdecompra.xlsx'  
+excel_file = 'excel\proveedores.xlsx'  
 db_file = 'drofasa.db'  
 #'excel\cuentascontables.xlsx' 
 #'excel\ct.xlsx'   cuentastesoreria
 #'excel\conceptosdecompra.xlsx'   conceptocompra
 
-excel_to_sqlite(excel_file, db_file, "conceptocompra")
+excel_to_sqlite(excel_file, db_file, "proveedores")

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1>Facturitas :D </h2>
+
+    <!-- Campo de entrada que sirve como ComboBox -->
+    <div class="form-group">
+        <label for="comboBoxInput">Buscar:</label>
+        <input type="text" id="comboBoxInput" class="form-control" placeholder="Escribe para buscar..." list="comboOptions" oninput="filterOptions()">
+        <datalist id="comboOptions">
+            {% for item in items %}
+            
+                <option value={{item}}></option>
+                
+                
+                {% endfor %}
+           
+        </datalist>
+    </div>
+</div>
+
+<!-- Incluir el script para el filtrado -->
+
+{% endblock %}

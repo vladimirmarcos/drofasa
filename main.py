@@ -1,16 +1,25 @@
-import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-from system.menu.menuadmin import AdminMenu
+
+import threading
+
+
+from newwindows import Program
+from server.flaskapp import run_flask
 
 
 def main():
     root = ttk.Window(themename="darkly")
     root.state('zoomed')  
-    root.grid_columnconfigure(0, weight=1)  
-    root.grid_rowconfigure(0,weight=1)
-    AdminMenu(root)
+    Program(root)
     root.mainloop()
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
+    # Hilo para Flask
+    flask_thread = threading.Thread(target=run_flask,daemon=True)
+
+# Iniciar el hilo del servidor Flask
+    flask_thread.start()
     main()
+
+
