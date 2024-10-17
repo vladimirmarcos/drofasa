@@ -1,0 +1,38 @@
+<script>
+ document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search');
+    const comboBox = document.getElementById('combo-box');
+    const cuitInput = document.getElementById('cuit');
+    const tipoInput = document.getElementById('tipo');
+
+    // Lista de items obtenida de Flask, puedes usar Jinja para inyectar esta lista directamente en el JavaScript
+    {% if items is not none %}
+        const items = {{ items | tojson | safe }};
+    {% else %}
+        const items = [];
+    {% endif %}
+
+    // Maneja el evento de entrada en el campo de búsqueda
+    searchInput.addEventListener('input', function () {
+        const searchValue = searchInput.value.toLowerCase();
+        comboBox.innerHTML = '';
+
+        items.forEach(function (item) {
+            if (item[1].toLowerCase().includes(searchValue)) {
+                const li = document.createElement('li');
+                li.classList.add('list-group-item');
+                li.textContent = item[1];
+                li.addEventListener('click', function () {
+                    searchInput.value = item[1];
+                    cuitInput.value = item[2];
+                    
+                    tipoInput.value = item[6]; 
+                    comboBox.innerHTML = ''; 
+                });
+                comboBox.appendChild(li);
+            }
+        });
+    });
+});
+
+</script>

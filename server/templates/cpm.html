@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block head %}
+        
+
+{% endblock %}
+{% block content %}
+<div class="container">
+    <form method="POST" id="formulario" autocomplete="off">
+        <div class="row">   
+            <div class="col-4">
+                <label for="campo1">Droga </label>
+                <input type="text" class="form-control" id="campo1" placeholder="Escriba codigo de droga" oninput="filtrarOpciones(this)" name="droga0"  value="{{ drogas[0].nombre }}">
+                <ul class="list-group" id="campo1-opciones" style="position: absolute; z-index: 1000;"></ul>
+            </div>
+            <div class="col">
+                <label>Ingrese la cantidad de droga</label>
+                <input type="number" class="form-control entero" name="cantidad0" value="{{ cantidades[0]}}">
+                <span class="entero-error text-danger"></span>
+            </div>
+
+            <div class="col">
+                <label>Ingrese el precio unitario </label>
+                <input type="number" class="form-control flotante" step="0.01" name="precio0" value="{{ precios[0]  }}">
+                <span class="flotante-error text-danger"></span>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <label for="campo1">Droga </label>
+                <input type="text" class="form-control" id="campo2" name="droga1" placeholder="Escriba codigo de droga" oninput="filtrarOpciones(this)"  value="{{ drogas[1].nombre  }}">
+                <ul class="list-group" id="campo2-opciones" style="position: absolute; z-index: 1000;"></ul>
+            </div>
+            <div class="col">
+                <label>Ingrese la cantidad de droga</label>
+                <input type="number" class="form-control entero" name="cantidad1" value="{{ cantidades[1]  }}">
+                <span class="entero-error text-danger"></span>
+            </div>
+
+            <div class="col">
+                <label>Ingrese el precio unitario </label>
+                <input type="number" class="form-control flotante" step="0.01" name="precio1"  value="{{ precios[1]}}">
+                <span class="flotante-error text-danger"></span>
+        </div>
+
+            
+
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <label for="campo1">Droga </label>
+                <input type="text" class="form-control" id="campo3" name="droga2" placeholder="Escriba codigo de droga" oninput="filtrarOpciones(this)" value="{{ drogas[2].nombre }}">
+                <ul class="list-group" id="campo3-opciones" style="position: absolute; z-index: 1000;"></ul>
+            </div>
+            <div class="col">
+                <label>Ingrese la cantidad de droga</label>
+                <input type="number" class="form-control entero" name="cantidad2" value="{{ cantidades[2] if cantidades|length > 0 else '' }}">
+                <span class="entero-error text-danger"></span>
+            </div>
+
+            <div class="col">
+                <label>Ingrese el precio unitario </label>
+                <input type="number" class="form-control flotante" step="0.01" name="precio2" value="{{ precios[2] if precios|length > 0 else '' }}">
+                <span class="flotante-error text-danger"></span>
+        </div>
+
+            
+
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <label for="campo1">Droga </label>
+                <input type="text" class="form-control" id="campo4" name="droga3" placeholder="Escriba codigo de droga" oninput="filtrarOpciones(this)" value="{{ drogas[3].nombre if drogas|length > 0 else '' }}">
+                <ul class="list-group" id="campo4-opciones" style="position: absolute; z-index: 1000;"></ul>
+            </div>
+            <div class="col">
+                <label>Ingrese la cantidad de droga</label>
+                <input type="number" class="form-control entero" name="cantidad3" value="{{ cantidades[3] if cantidades|length > 0 else '' }}">
+                <span class="entero-error text-danger"></span>
+            </div>
+
+            <div class="col">
+                <label>Ingrese el precio unitario </label>
+                <input type="number" class="form-control flotante" step="0.01" name="precio3" value="{{ precios[3] if precios|length > 0 else '' }}">
+                <span class="flotante-error text-danger"></span>
+        </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-4">
+                <label for="campo1">Droga </label>
+                <input type="text" class="form-control" id="campo5" placeholder="Escriba codigo de droga" name="droga4" oninput="filtrarOpciones(this)" value="{{ drogas[4].nombre if drogas|length > 0 else '' }}">
+                <ul class="list-group" id="campo5-opciones" style="position: absolute; z-index: 1000;"></ul>
+            </div>
+            <div class="col">
+                <label>Ingrese la cantidad de droga</label>
+                <input type="number" class="form-control entero" name="cantidad4" value="{{ cantidades[4] if cantidades|length > 0 else '' }}">
+                <span class="entero-error text-danger"></span>
+            </div>
+
+            <div class="col">
+                <label>Ingrese el precio unitario </label>
+                <input type="number" class="form-control flotante" step="0.01" name="precio4" value="{{ precios[4] if precios|length > 0 else '' }}">
+                <span class="flotante-error text-danger"></span>
+        </div>
+        </div>
+        <button type="submit" class="btn btn-primary" >Enviar</button>
+    </form>
+</div>
+
+{% include 'scripts/buscaenlista.html' %}
+{% include 'scripts/scriptnumero.html' %}
+{% endblock %}

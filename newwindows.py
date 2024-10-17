@@ -20,7 +20,7 @@ class Program:
 
     def show_labels_1(self, event):
         """Muestra una lista de etiquetas cuando se hace clic en 'Etiqueta 1'."""
-        webbrowser.open("http://127.0.0.1:5000/conceptodecompra")
+        webbrowser.open("http://127.0.0.1:5000/pf")
 
     def show_labels_2(self, event):
         """Muestra una lista de etiquetas cuando se hace clic en 'Etiqueta 2'."""

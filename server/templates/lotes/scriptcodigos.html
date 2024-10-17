@@ -1,0 +1,84 @@
+<script>
+ 
+ const cantidadesRequeridas = {{ cantidadesRequeridas | tojson }};
+    const codigos = {{ codigos | tojson }};
+    const lotesContainer = document.getElementById('lotes-container');
+    const agregarLoteBtn = document.getElementById('agregar-lote');
+    const enviarFormularioBtn = document.getElementById('enviar-formulario');
+    const faltanMsg = document.getElementById('faltan');
+
+    let lotes = [];
+
+    function actualizarFaltantes() {
+        const totales = {};
+        codigos.forEach(codigo => {
+            totales[codigo] = 0;
+        });
+
+        // Sumamos las cantidades de los lotes por código
+        lotes.forEach(lote => {
+            if (totales[lote.codigo] !== undefined) {
+                totales[lote.codigo] += lote.cantidad;
+            }
+        });
+
+        // Verificamos los faltantes
+        let faltantes = '';
+        let completo = true;
+        codigos.forEach(codigo => {
+            const cantidadRestante = cantidadesRequeridas[codigo] - totales[codigo];
+            if (cantidadRestante > 0) {
+                faltantes += `Te faltan ${cantidadRestante} unidades del código ${codigo}.<br>`;
+                completo = false;
+            }
+        });
+
+        if (completo) {
+            enviarFormularioBtn.style.display = 'block';
+            faltanMsg.innerHTML = '';
+        } else {
+            enviarFormularioBtn.style.display = 'none';
+            faltanMsg.innerHTML = faltantes;
+        }
+    }
+
+    agregarLoteBtn.addEventListener('click', function() {
+        const loteDiv = document.createElement('div');
+        loteDiv.classList.add('row', 'lote', 'mt-3');
+
+        loteDiv.innerHTML = `
+            <div class="col-3">
+                <label for="codigo">Código</label>
+                <input type="text" class="form-control" id="campo1" placeholder="Escriba codigo de droga" oninput="filtrarOpciones(this)" name="droga0" >
+                <ul class="list-group" id="campo1-opciones" style="position: absolute; z-index: 1000;"></ul>
+            </div>
+            <div class="col-3">
+                <label for="cantidad">Cantidad</label>
+                <input type="number" class="form-control cantidad" name="cantidad" placeholder="Cantidad" required>
+            </div>
+            <div class="col-3">
+                <label for="vencimiento">Fecha de Vencimiento</label>
+                <input type="date" class="form-control" name="vencimiento" required>
+            </div>
+        `;
+
+        lotesContainer.appendChild(loteDiv);
+
+        // Añadir evento para actualizar la suma de las cantidades
+        loteDiv.querySelector('.cantidad').addEventListener('input', actualizarLote);
+    });
+
+    function actualizarLote() {
+        lotes = [];
+        const lotesDivs = document.querySelectorAll('.lote');
+        lotesDivs.forEach(loteDiv => {
+            const codigo = loteDiv.querySelector('input[name="codigo"]').value;
+            const cantidad = parseFloat(loteDiv.querySelector('input[name="cantidad"]').value);
+            if (codigo && !isNaN(cantidad)) {
+                lotes.push({ codigo, cantidad });
+            }
+        });
+
+        actualizarFaltantes();
+    }
+</script>

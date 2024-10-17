@@ -3,10 +3,13 @@ import ast
 from flask import Flask,render_template,request, redirect, url_for, flash,session
 from system.conexion.basedatos import searchalldata
 import math
+import datetime
 from base import convertintegretdata
 app = Flask(__name__)
 items=searchalldata("iva")
-
+drogas = ["","","","",""]
+cantidades = [0,0,0,0,0]
+precios = [0.0,0.0,0.0,0.0,0.0]
 
 app.secret_key = "tu_clave_secreta_aqui"
 
@@ -75,16 +78,36 @@ def iva():
 def fnp():
     auxiliar=searchalldata("proveedores")
     proveedores=[list(tupla) for tupla in auxiliar]
+    today_date = datetime.datetime.today().strftime('%Y-%m-%d')
+    if request.method == "POST":
+        fecha = request.form.get("fecha") 
+        tipo = request.form.get("tipo") 
+        return redirect(url_for('cpm'))
+        
+    return render_template('proveedores/pf.html',
+                           items=proveedores,
+                           titulo="Conceptos de Compras",today_date =today_date )
     
-    search_items = [item[1] for item in proveedores]
-    return render_template('pf.html',
-                           items=search_items,
-                           titulo="Conceptos de Compras")
-    
-            
+@app.route("/cpm",methods=["GET", "POST"])
+def cpm():
+    auxiliar=searchalldata("droga")
+    opciones=[list(tupla) for tupla in auxiliar]
+    itemoption = [item[1] for item in opciones]
+    if request.method == "POST":
+        for i in range(0, 4):  
+            cantidades[i] = int(request.form.get(f'cantidad{i}'))
+            precios[i] = float(request.form.get(f'precio{i}'))
+            drogas[i]=request.form.get(f'droga{i}')
+        return redirect(url_for('lotesingreso')) 
+    return render_template("cpm.html", drogas=drogas, cantidades=cantidades, precios=precios,opciones=itemoption)
 
-
-
+@app.route("/lotesingreso")
+def lotesingreso():
+    opcion=[elemento for elemento in drogas if elemento != ""]
+    codigostotales=[elemento for elemento in drogas if elemento != ""]
+    listavalores=[elemento for elemento in cantidades if elemento != 0]
+    diccionario = dict(zip(codigostotales, listavalores))
+    return render_template('lotes/lotesingreso.html', cantidadesRequeridas=diccionario, codigos=codigostotales,opciones=opcion)
 
 def run_flask():
     app.run(port=5000, debug=True,use_reloader=False)

@@ -1,0 +1,40 @@
+<script>
+    // Lista de opciones que será la misma para todos los campos
+    const opciones = {{ opciones | tojson }};
+    console.log(opciones)
+
+    function filtrarOpciones(input) {
+        const valor = input.value.toLowerCase();
+        const listaOpciones = document.getElementById(input.id + '-opciones');
+        
+        // Limpiamos las opciones anteriores
+        listaOpciones.innerHTML = '';
+
+        if (valor === '') {
+            listaOpciones.style.display = 'none';
+            return;
+        }
+
+        // Filtramos las opciones que coincidan con lo que el usuario escribe
+        const opcionesFiltradas = opciones.filter(opcion => opcion.toLowerCase().includes(valor));
+
+        if (opcionesFiltradas.length > 0) {
+            listaOpciones.style.display = 'block';
+        } else {
+            listaOpciones.style.display = 'none';
+        }
+
+        // Mostramos las opciones filtradas
+        opcionesFiltradas.forEach(opcion => {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item');
+            li.textContent = opcion;
+            li.onclick = function () {
+                input.value = opcion;
+                listaOpciones.innerHTML = '';
+                listaOpciones.style.display = 'none';
+            };
+            listaOpciones.appendChild(li);
+        });
+    }
+</script>

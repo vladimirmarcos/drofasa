@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block head %}
+        
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5"> 
+             <h1>Facturas  Proveedores</h1>
+    <div class="container mt-5">
+        <form method="POST" action="/pf">
+
+            <div class="form-group col-md-12">
+                <label for="search">Proveedor</label>
+                <input type="text" class="form-control" id="search" placeholder="Escribir nombre de proveedor" required>
+                <ul id="combo-box" class="list-group mt-2"></ul>
+                <label for="cuit">cuit</label>
+                    <input type="text" class="form-control" id="cuit" readonly >
+                <label for="tipo">Tipo de factura</label>
+                    <input type="text" class="form-control" id="tipo">
+                <label for="numero">Número de factura</label>
+                    <input type="text" class="form-control" id="numero" required>
+                <label for="fecha">Fecha:</label>
+                    <input type="date" class="form-control" id="fecha" name="fecha" value="{{ today_date }}">
+                <label for="tipo">Tipo:</label>
+                <select class="form-control" id="tipo" name="tipo" required>
+                    <option value="">Seleccionar...</option>
+                    <option value="con_remito">Con Remito</option>
+                    <option value="de_concepto">De Concepto</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Enviar</button>
+    
+            </div>
+        </form>
+    </div>
+
+    
+</div>
+{% include 'scripts/completadatosproveedores.html' %}
+{% endblock %}

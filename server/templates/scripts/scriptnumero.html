@@ -1,0 +1,39 @@
+<script>
+   document.getElementById('formulario').addEventListener('submit', function(event) {
+        // Evitar el envío del formulario inicialmente
+        event.preventDefault();
+
+        // Obtener todos los campos de entero y flotante
+        const enteroInputs = document.querySelectorAll('.entero');
+        const flotanteInputs = document.querySelectorAll('.flotante');
+        const enteroErrors = document.querySelectorAll('.entero-error');
+        const flotanteErrors = document.querySelectorAll('.flotante-error');
+
+        // Limpiar mensajes de error
+        enteroErrors.forEach(error => error.textContent = '');
+        flotanteErrors.forEach(error => error.textContent = '');
+
+        let valid = true; // Variable para verificar si todo es válido
+
+        // Validar campos enteros
+        enteroInputs.forEach((input, index) => {
+            if (!Number.isInteger(Number(input.value))) {
+                enteroErrors[index].textContent = 'Dato no válido. Debe ser un número entero.';
+                valid = false; // Marcar como no válido
+            }
+        });
+
+        // Validar campos flotantes
+        flotanteInputs.forEach((input, index) => {
+            if (isNaN(Number(input.value))) {
+                flotanteErrors[index].textContent = 'Dato no válido. Debe ser un número flotante.';
+                valid = false; // Marcar como no válido
+            }
+        });
+
+        // Si todo es válido, se envía el formulario
+        if (valid) {
+            this.submit(); // Enviar formulario
+        }
+    });
+</script>

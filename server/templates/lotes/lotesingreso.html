@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block head %}
+    
+    
+    
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Carga de Lotes</h2>
+    <form method="POST" id="formulario-lotes">
+        <div id="lotes-container">
+            <div class="row lote">
+                <div class="col-3">
+                    <label for="codigo">Código</label>
+                    <input type="text" class="form-control" id="campo1" placeholder="Escriba codigo de droga" oninput="filtrarOpciones(this)" name="droga0" >
+                    <ul class="list-group" id="campo1-opciones" style="position: absolute; z-index: 1000;"></ul>
+                </div>
+                <div class="col-3">
+                    <label for="cantidad">Cantidad</label>
+                    <input type="number" class="form-control cantidad" name="cantidad" placeholder="Cantidad" required>
+                </div>
+                <div class="col-3">
+                    <label for="vencimiento">Fecha de Vencimiento</label>
+                    <input type="date" class="form-control" name="vencimiento" required>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="agregar-lote" class="btn btn-primary mt-3">Agregar Lote</button>
+        <button type="submit" id="enviar-formulario" class="btn btn-success mt-3" style="display:none;">Enviar</button>
+        <p id="faltan" class="text-warning mt-3"></p>
+    </form>
+</div>
+{% include 'scripts/buscaenlista.html' %}
+{% include 'lotes/scriptcodigos.html' %}
+{% endblock %}
