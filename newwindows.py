@@ -5,11 +5,8 @@ import webbrowser
 
 class Program:
     def __init__(self,root):
-        
         self.root = root
         self.frame = None
-        
-        # Etiquetas principales
         self.label_contabilidad = ttk.Label(master=self.root, text="concepto de compra", bootstyle="primary")
         self.label_contabilidad.grid(row=0,column=1)
         self.label_contabilidad.bind("<Button-1>", self.show_labels_1)  # Detecta clic

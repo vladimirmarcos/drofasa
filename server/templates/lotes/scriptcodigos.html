@@ -1,84 +1,67 @@
 <script>
- 
- const cantidadesRequeridas = {{ cantidadesRequeridas | tojson }};
-    const codigos = {{ codigos | tojson }};
-    const lotesContainer = document.getElementById('lotes-container');
-    const agregarLoteBtn = document.getElementById('agregar-lote');
-    const enviarFormularioBtn = document.getElementById('enviar-formulario');
-    const faltanMsg = document.getElementById('faltan');
 
-    let lotes = [];
+function verificarCantidades() {
+    const cantidadesRequeridas = {{ cantidadesRequeridas | tojson }};
+    let cantidadesIngresadas = {};
+    let todoValido = true;
 
-    function actualizarFaltantes() {
-        const totales = {};
-        codigos.forEach(codigo => {
-            totales[codigo] = 0;
-        });
+    document.querySelectorAll('input[name="codigo[]"]').forEach((input, index) => {
+        const codigo = input.value;
+        const cantidadInput = document.querySelectorAll('input[name="cantidad[]"]')[index];
+        const cantidad = parseInt(cantidadInput.value);
 
-        // Sumamos las cantidades de los lotes por código
-        lotes.forEach(lote => {
-            if (totales[lote.codigo] !== undefined) {
-                totales[lote.codigo] += lote.cantidad;
-            }
-        });
-
-        // Verificamos los faltantes
-        let faltantes = '';
-        let completo = true;
-        codigos.forEach(codigo => {
-            const cantidadRestante = cantidadesRequeridas[codigo] - totales[codigo];
-            if (cantidadRestante > 0) {
-                faltantes += `Te faltan ${cantidadRestante} unidades del código ${codigo}.<br>`;
-                completo = false;
-            }
-        });
-
-        if (completo) {
-            enviarFormularioBtn.style.display = 'block';
-            faltanMsg.innerHTML = '';
-        } else {
-            enviarFormularioBtn.style.display = 'none';
-            faltanMsg.innerHTML = faltantes;
+        if (!validarEntero(cantidadInput)) {
+            todoValido = false; // Si no es un número entero válido, detenemos la verificación
+            return;
         }
-    }
 
-    agregarLoteBtn.addEventListener('click', function() {
-        const loteDiv = document.createElement('div');
-        loteDiv.classList.add('row', 'lote', 'mt-3');
+        if (!cantidadesIngresadas[codigo]) {
+            cantidadesIngresadas[codigo] = 0;
+        }
+        cantidadesIngresadas[codigo] += cantidad;
 
-        loteDiv.innerHTML = `
-            <div class="col-3">
-                <label for="codigo">Código</label>
-                <input type="text" class="form-control" id="campo1" placeholder="Escriba codigo de droga" oninput="filtrarOpciones(this)" name="droga0" >
-                <ul class="list-group" id="campo1-opciones" style="position: absolute; z-index: 1000;"></ul>
-            </div>
-            <div class="col-3">
-                <label for="cantidad">Cantidad</label>
-                <input type="number" class="form-control cantidad" name="cantidad" placeholder="Cantidad" required>
-            </div>
-            <div class="col-3">
-                <label for="vencimiento">Fecha de Vencimiento</label>
-                <input type="date" class="form-control" name="vencimiento" required>
-            </div>
-        `;
-
-        lotesContainer.appendChild(loteDiv);
-
-        // Añadir evento para actualizar la suma de las cantidades
-        loteDiv.querySelector('.cantidad').addEventListener('input', actualizarLote);
+        if (cantidadesIngresadas[codigo] > cantidadesRequeridas[codigo]) {
+            cantidadInput.classList.add('is-invalid');
+            cantidadInput.nextElementSibling.textContent = `El número excede la cantidad máxima de ${cantidadesRequeridas[codigo]} para el código ${codigo}.`;
+            todoValido = false;
+        } else {
+            cantidadInput.classList.remove('is-invalid');
+            cantidadInput.nextElementSibling.textContent = '';
+        }
     });
 
-    function actualizarLote() {
-        lotes = [];
-        const lotesDivs = document.querySelectorAll('.lote');
-        lotesDivs.forEach(loteDiv => {
-            const codigo = loteDiv.querySelector('input[name="codigo"]').value;
-            const cantidad = parseFloat(loteDiv.querySelector('input[name="cantidad"]').value);
-            if (codigo && !isNaN(cantidad)) {
-                lotes.push({ codigo, cantidad });
-            }
-        });
+    mostrarCantidadRestante(cantidadesIngresadas, cantidadesRequeridas);
 
-        actualizarFaltantes();
+    // Si todas las cantidades ingresadas son válidas y completas, mostrar el botón
+    if (todoValido && verificarCantidadCompleta(cantidadesIngresadas, cantidadesRequeridas)) {
+        document.getElementById('btnCompletar').style.display = 'block';
+    } else {
+        document.getElementById('btnCompletar').style.display = 'none';
     }
+}
+
+function verificarCantidadCompleta(cantidadesIngresadas, cantidadesRequeridas) {
+    for (let codigo in cantidadesRequeridas) {
+        if (cantidadesIngresadas[codigo] !== cantidadesRequeridas[codigo]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function mostrarCantidadRestante(cantidadesIngresadas, cantidadesRequeridas) {
+    let mensaje = '';
+    for (let codigo in cantidadesRequeridas) {
+        const cantidadFaltante = cantidadesRequeridas[codigo] - (cantidadesIngresadas[codigo] || 0);
+        if (cantidadFaltante > 0) {
+            mensaje += `Te faltan ${cantidadFaltante} unidades del código ${codigo}.<br>`;
+        }
+    }
+    document.getElementById('mensajeCantidadFaltante').innerHTML = mensaje;
+}
+
+// Escuchar cambios en los campos de cantidad
+document.querySelectorAll('input[name="cantidad[]"]').forEach(input => {
+    input.addEventListener('input', verificarCantidades);
+});
 </script>

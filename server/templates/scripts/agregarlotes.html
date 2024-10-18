@@ -1,0 +1,14 @@
+<script>
+function agregarLote() {
+    const idlote= '{{idlotes}}';
+    
+    const lotesContainer = document.getElementById(idlote);
+    
+    console.log(lotesContainer)
+    const loteRow = document.createElement('div');
+    loteRow.classList.add('row', 'lote-row', 'mt-2');
+    const campos = {{ campos |tojson }};
+    loteRow.innerHTML = campos;
+    lotesContainer.appendChild(loteRow);
+}
+</script>

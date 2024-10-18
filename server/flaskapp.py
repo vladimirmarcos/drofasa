@@ -92,7 +92,7 @@ def fnp():
 def cpm():
     auxiliar=searchalldata("droga")
     opciones=[list(tupla) for tupla in auxiliar]
-    itemoption = [item[1] for item in opciones]
+    itemoption=[item[1] for item in opciones]
     if request.method == "POST":
         for i in range(0, 4):  
             cantidades[i] = int(request.form.get(f'cantidad{i}'))
@@ -107,7 +107,7 @@ def lotesingreso():
     codigostotales=[elemento for elemento in drogas if elemento != ""]
     listavalores=[elemento for elemento in cantidades if elemento != 0]
     diccionario = dict(zip(codigostotales, listavalores))
-    return render_template('lotes/lotesingreso.html', cantidadesRequeridas=diccionario, codigos=codigostotales,opciones=opcion)
+    return render_template('lotes/lotesingreso.html', cantidadesRequeridas=diccionario, codigos=codigostotales,opciones=opcion,idlotes='lotesContainer')
 
 def run_flask():
     app.run(port=5000, debug=True,use_reloader=False)

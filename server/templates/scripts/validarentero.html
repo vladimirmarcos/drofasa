@@ -1,0 +1,17 @@
+<script> 
+function validarEntero(input) {
+    const valor = input.value;
+    const entero = parseInt(valor, 10);
+
+    if (isNaN(entero) || parseFloat(valor) !== entero) {
+        input.classList.add('is-invalid');
+        input.nextElementSibling.textContent = 'Por favor, ingresa un número entero válido.';
+        return false;
+    } else {
+        input.classList.remove('is-invalid');
+        input.nextElementSibling.textContent = '';
+        return true;
+    }
+}
+
+</script>
